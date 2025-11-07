@@ -9,8 +9,79 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+    - name: Get random Octocat from Octodex
+      id: octocat
+      run: |
+        # Fetch a random Octocat from the GitHub Octodex
+        RANDOM_NUMBER=$(shuf -i 1-200 -n 1)
+        OCTOCAT_URL="https://octodex.github.com/images/octocat-${RANDOM_NUMBER}.png"
+        
+        # Fallback to some popular Octocats if the random one doesn't exist
+        POPULAR_OCTOCATS=(
+          "https://octodex.github.com/images/welcometocat.png"
+          "https://octodex.github.com/images/riddlocat.png"
+          "https://octodex.github.com/images/kimonotocat.png"
+          "https://octodx.github.com/images/femalecodertocat.png"
+          "https://octodex.github.com/images/daftpunktocat-guy.gif"
+          "https://octodex.github.com/images/twenty-percent-cooler-octocat.png"
+          "https://octodex.github.com/images/octocat-de-los-muertos.jpg"
+          "https://octodex.github.com/images/yaktocat.png"
+          "https://octodex.github.com/images/steroidtocat.png"
+          "https://octodex.github.com/images/adventure-cat.png"
+        )
+        
+        # Pick a random Octocat from the popular ones
+        SELECTED_OCTOCAT=${POPULAR_OCTOCATS[$RANDOM % ${#POPULAR_OCTOCATS[@]}]}
+        echo "octocat_url=$SELECTED_OCTOCAT" >> $GITHUB_OUTPUT
+        
+        # Get just the filename for a fun greeting
+        OCTOCAT_NAME=$(basename "$SELECTED_OCTOCAT" .png | basename .jpg | basename .gif)
+        echo "octocat_name=$OCTOCAT_NAME" >> $GITHUB_OUTPUT
+    
     - uses: actions/first-interaction@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: "Message that will be displayed on users' first issue"
-        pr-message: "Message that will be displayed on users' first pull request"
+        issue-message: |
+          🎉 Hey there, amazing human! 🎉
+          
+          ![Random Octocat](${{ steps.octocat.outputs.octocat_url }})
+          
+          Mona here (yes, THE GitHub Octocat)! 🐙🐱 I'm practically bouncing with excitement because you've just opened your FIRST issue in this repository! 
+          
+          I brought along my friend **${{ steps.octocat.outputs.octocat_name }}** from the Octodex to celebrate with us! 🎊
+          
+          🌟 This is like Christmas morning, but better because it involves code! Your contribution matters more than you know, and I'm here to help make your experience absolutely fantastic.
+          
+          Feel free to:
+          - Ask questions (I love curious minds! 🧠)
+          - Share your ideas (creativity makes my whiskers tingle! ✨)
+          - Get help from our wonderful community (they're as friendly as they are brilliant! 👥)
+          
+          Welcome aboard this coding adventure! Let's build something incredible together! 🚀
+          
+          *Purrs in code* 🐾
+          – Mona 💜
+        pr-message: |
+          🚀 WHOA! Hold onto your keyboards, everyone! 🚀
+          
+          ![Random Octocat](${{ steps.octocat.outputs.octocat_url }})
+          
+          *Mona does a little happy dance* 💃🐱
+          
+          You've just opened your VERY FIRST pull request! I'm literally doing backflips right now (well, as much as an Octocat can backflip)! This is HUGE! 🎊
+          
+          I've brought my friend **${{ steps.octocat.outputs.octocat_name }}** from the Octodex to witness this momentous occasion! 🌟
+          
+          🌟 You're not just contributing code – you're joining a family of incredible developers who believe in making the world better, one commit at a time!
+          
+          Here's what happens next:
+          - Our maintainers will review your awesome work 👀
+          - They might suggest some changes (it's like collaborative cooking – we're all chefs here! 👨‍🍳👩‍🍳)
+          - Once everything looks perfect, we'll merge it and celebrate! 🎉
+          
+          Pro tip from your friendly neighborhood Octocat: Don't be afraid to ask questions or request help. We're all learning together! 📚✨
+          
+          Thanks for making this repository (and my day) better! You rock! 🤘
+          
+          *Excited tentacle wiggles* 🐙
+          – Mona, your biggest fan 💙
